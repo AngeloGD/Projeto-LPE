@@ -1,5 +1,13 @@
 #include <stdio.h>
 
+#define BLK "\e[0;30m"
+#define RED "\e[0;31m"
+#define GRN "\e[0;32m"
+#define YEL "\e[0;33m"
+#define BLU "\e[0;34m"
+#define MAG "\e[0;35m"
+#define CYN "\e[0;36m"
+#define WHT "\e[0;37m"
 
 int main(void) {
 
@@ -7,16 +15,16 @@ int main(void) {
       carrosatend = 0, litrosvend = 0;
   float preco, valorvendas = 0;
 
-  printf("\n\tAutor: Angelo Gabriel Debarba\n");
+  printf(CYN "\n\tAutor: Angelo Gabriel Debarba\n");
   printf("\nDESCRIÇÃO:\n\nEsse programa tem como base gerenciar as informações "
          "de um posto de gasolina que contém apenas uma bomba e um tipo de "
-         "combustível.\n");
+         "combustível.\n" WHT);
   do {
     printf("\nPor gentileza, informe o preço da gasolina:\nATENÇÃO: Utilize um "
            "ponto para definir o valor em centavos!!\n");
     scanf("%f", &preco);
     if (preco <= 0) {
-      printf("\nValor fornecido é ivalido.\n");
+      printf(RED "\nValor fornecido é ivalido.\n" WHT);
     }
 
   } while (preco <= 0);
@@ -25,7 +33,7 @@ int main(void) {
         "\nNeste momento informe a quantidade de carros que a fila suporta:\n");
     scanf("%d", &fila);
     if (fila <= 0) {
-      printf("\nValor fornecido é ivalido.\n");
+      printf(RED "\nValor fornecido é ivalido.\n" WHT);
     }
   } while (fila <= 0);
   system("clear");
@@ -36,10 +44,10 @@ int main(void) {
   while (menu != 5) {
     op = 0;
 
-    printf("\n\t\t\tMENU PRINCIPAL\n\n");
+    printf(BLU "\n\t\t\tMENU PRINCIPAL\n\n");
     printf(" Escolha uma opção:\n\n[1] Adicionar um carro na fila.\n\n[2] "
            "Abastecimento.\n\n[3] Exibir carros na fila de espera.\n\n[4] "
-           "Relatórios.\n\n[5] Encerrar.\n\n");
+           "Relatórios.\n\n[5] Encerrar.\n\n" WHT);
     scanf("%d", &menu);
 
     switch (menu) {
@@ -47,10 +55,10 @@ int main(void) {
       system("clear");
       if (contfila < fila) {
         printf("[1] Adicionar um carro na fila:\n\n");
-        printf("Carro adicionado.\n\n");
+        printf(GRN "Carro adicionado.\n\n" WHT);
         contfila += 1;
       } else {
-        printf("Não é possível adicionar mais carros à fila.\n\n");
+        printf(RED "Não é possível adicionar mais carros à fila.\n\n" WHT);
       }
       printf("%d carros na fila\n\n", contfila);
       break;
@@ -64,20 +72,20 @@ int main(void) {
           scanf("%d", &litros);
           system("clear");
           if ((litros <= 0) || (litros > tanque)) {
-            printf("\nValor fornecido é ivalido.\n");
+            printf(RED "\nValor fornecido é ivalido.\n" WHT);
           } else {
             contfila -= 1;
             tanque -= litros;
             litrosvend = 200 - tanque;
             carrosatend += 1;
-            printf("Carro abastecido.\n\nReorganizando fila.\n\n");
+            printf(GRN "Carro abastecido.\n\nReorganizando fila.\n\n" WHT);
             printf("Restam %d litros de combustível.\n\n", tanque);
           }
         } else {
-          printf("Não há carros disponíveis para abastecer!\n\n");
+          printf(RED "Não há carros disponíveis para abastecer!\n\n" WHT);
         }
       } else {
-        printf("Não há combustível no tanque!\n\n");
+        printf(RED "Não há combustível no tanque!\n\n" WHT);
       }
       break;
     case (3):
@@ -89,7 +97,7 @@ int main(void) {
       system("clear");
 
       while (op != 6) {
-        printf("\n\t\t\tRelatórios:\n\n");
+        printf(BLU "\n\t\t\tRelatórios:\n\n");
         printf(
             " Escolha uma opção:\n\n[1] Quantidade de litros vendida.\n\n[2] "
             "Valor total arrecadado com as vendas.\n\n[3] Quantidade de carros "
@@ -97,7 +105,7 @@ int main(void) {
             "Quantidade de combustível restante no tanque.\n\n[5] Gerar "
             "arquivo "
             "para impressão (com todas as informações de 1, 2, 3 e 4).\n\n[6] "
-            "voltar ao menu anterior.\n\n");
+            "voltar ao menu anterior.\n\n" WHT);
         scanf("%d", &op);
         switch (op) {
         case (1):
@@ -144,7 +152,7 @@ int main(void) {
           break;
         default:
           system("clear");
-          printf("\nOpção invalida.\n\n");
+          printf(RED "\nOpção invalida.\n\n" WHT);
           break;
         }
       }
@@ -156,7 +164,7 @@ int main(void) {
       break;
     default:
       system("clear");
-      printf("Opção invalida.\n\n");
+      printf(RED "Opção invalida.\n\n" WHT);
       break;
     }
   }
