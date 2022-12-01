@@ -1,7 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
-#define TAM 20
 
 #define BLK "\e[0;30m"
 #define RED "\e[0;31m"
@@ -43,7 +42,6 @@ struct Tcarro {
   char modelo[20];
   char cor[20];
   int ano;
-  // int placa;
 };
 
 int main(void) {
@@ -51,8 +49,10 @@ int main(void) {
   int menu = 0, fila = 0, contfila = 0, op = 0, litros = 0, tanque = 200,
       carrosatend = 0, litrosvend = 0, escolha = 0, i = 0, j = 0;
   float preco, valorvendas = 0;
-  struct Tcarro carroFila[TAM];
-  struct Tcarro carroAtendido[TAM];
+
+  struct Tcarro *carroFila;
+
+  struct Tcarro *carroAtendido;
 
   INTRO();
 
@@ -74,6 +74,9 @@ int main(void) {
     }
   } while (fila <= 0);
 
+  carroFila = calloc(fila, sizeof(struct Tcarro));
+  int tamanhoAtendido = 1;
+  carroAtendido = calloc(tamanhoAtendido, sizeof(struct Tcarro));
   system("clear");
 
   while (menu != 5) {
@@ -89,27 +92,28 @@ int main(void) {
     switch (menu) {
     case (1):
       system("clear");
-      if (contfila < fila) {
-        printf("[1] Adicionar um carro na fila:\n\n");
-        printf("Informe o modelo do carro: ");
-        setbuf(stdin, NULL);
-        fgets(carroFila[i].modelo, 20, stdin);
-        carroFila[i].modelo[strcspn(carroFila[i].modelo, "\n")] = 0;
-        printf("Informe o ano de fabricação do carro: ");
-        scanf("%d", &carroFila[i].ano);
-        // printf("Informe a placa do carro: ");
-        // scanf("%d", &carroFila[i].placa);
-        printf("Informe a cor do carro: ");
-        setbuf(stdin, NULL);
-        fgets(carroFila[i].cor, 10, stdin);
-        carroFila[i].cor[strcspn(carroFila[i].cor, "\n")] = 0;
-        printf(GRN "Carro adicionado.\n\n" WHT);
-        contfila += 1;
-        i += 1;
-      } else {
-        printf(RED "Não é possível adicionar mais carros à fila.\n\n" WHT);
-      }
-      printf("%d carros na fila\n\n", contfila);
+      if (tanque != 0) {
+        if (contfila < fila) {
+          printf("[1] Adicionar um carro na fila:\n\n");
+          printf("Informe o modelo do carro: ");
+          setbuf(stdin, NULL);
+          fgets(carroFila[i].modelo, 20, stdin);
+          carroFila[i].modelo[strcspn(carroFila[i].modelo, "\n")] = 0;
+          printf("Informe o ano de fabricação do carro: ");
+          scanf("%d", &carroFila[i].ano);
+          printf("Informe a cor do carro: ");
+          setbuf(stdin, NULL);
+          fgets(carroFila[i].cor, 10, stdin);
+          carroFila[i].cor[strcspn(carroFila[i].cor, "\n")] = 0;
+          printf(GRN "Carro adicionado.\n\n" WHT);
+          contfila += 1;
+          i += 1;
+        } else {
+          printf(RED "Não é possível adicionar mais carros à fila.\n\n" WHT);
+        }
+        printf("%d carros na fila\n\n", contfila);
+      } else
+        printf(RED "Não há mais gasolina para abastecer novos carros.\n\n" WHT);
       break;
     case (2):
       system("clear");
@@ -139,6 +143,9 @@ int main(void) {
                 contfila -= 1;
                 tanque = 0;
                 litrosvend = 200 - tanque;
+                tamanhoAtendido++;
+                carroAtendido = realloc(
+                    carroAtendido, tamanhoAtendido * sizeof(struct Tcarro));
                 strcpy(carroAtendido[carrosatend].modelo,
                        carroFila[carrosatend].modelo);
                 carroAtendido[carrosatend].ano = carroFila[carrosatend].ano;
@@ -146,13 +153,20 @@ int main(void) {
                        carroFila[carrosatend].cor);
                 carrosatend += 1;
 
+                for (int k = 0; k < i; k++) {
+                  carroFila[k] = carroFila[k + 1];
+                }
+                i -= 1;
                 printf(GRN
                        "\nCarro abastecido.\n\nReorganizando fila.\n\n" WHT);
                 printf("\nNão há mais gasolina no tanque\n\n");
                 break;
               case (2):
+                for (int k = 0; k < i; k++) {
+                  carroFila[k] = carroFila[k + 1];
+                }
+                i -= 1;
                 contfila -= 1;
-                carrosatend += 1;
                 printf("\nObrigado pela atenção e volte sempre!\n\n");
                 break;
               default:
@@ -160,11 +174,15 @@ int main(void) {
                 break;
               }
             }
+            escolha = 0;
           } else {
             contfila -= 1;
             tanque -= litros;
             litrosvend = 200 - tanque;
             // strcpy(string_destino,string_origem);
+            tamanhoAtendido++;
+            carroAtendido =
+                realloc(carroAtendido, tamanhoAtendido * sizeof(struct Tcarro));
             strcpy(carroAtendido[carrosatend].modelo,
                    carroFila[carrosatend].modelo);
             carroAtendido[carrosatend].ano = carroFila[carrosatend].ano;
@@ -179,20 +197,25 @@ int main(void) {
         }
       } else {
         printf(RED "\nNão há combustível no tanque!\n\n" WHT);
+        printf("Zerando fila\n");
       }
       break;
     case (3):
       system("clear");
       printf("[3] Exibir carros na fila de espera:\n\n");
-      printf("%d carros ainda não foram abastecidos.\n\n", contfila);
-      j = carrosatend;
-      while (j < i) {
-        printf("\n\nCarro %d", (j - carrosatend + 1));
-        printf("\nO modelo do carro é: %s ", carroFila[j].modelo);
-        printf("\nCor do carro: %s ", carroFila[j].cor);
-        printf("\nAno de fabricação: %d ", carroFila[j].ano);
-        // printf("\nPlaca do carro: %d ", carroFila[j].placa);
-        j += 1;
+      if (tanque != 0) {
+        printf("%d carros ainda não foram abastecidos.\n\n", contfila);
+        j = carrosatend;
+        // for
+        while (j < i) {
+          printf("\n\nCarro %d", (j - carrosatend + 1));
+          printf("\nO modelo do carro é: %s ", carroFila[j].modelo);
+          printf("\nCor do carro: %s ", carroFila[j].cor);
+          printf("\nAno de fabricação: %d ", carroFila[j].ano);
+          j += 1;
+        }
+      } else {
+        printf(RED "\nNão há carros na fila\n\n" WHT);
       }
 
       break;
@@ -227,7 +250,6 @@ int main(void) {
             printf("\nO modelo do carro é: %s ", carroFila[j].modelo);
             printf("\nCor do carro: %s ", carroFila[j].cor);
             printf("\nAno de fabricação: %d ", carroFila[j].ano);
-            // printf("\nPlaca do carro: %d ", carroFila[j].placa);
             j += 1;
           }
 
@@ -267,7 +289,9 @@ int main(void) {
 
     case (5):
       system("clear");
-      printf("[5] Encerrar...\n\n");
+      printf("[5] Encerrando...\n\n");
+      free(carroAtendido);
+      free(carroFila);
       break;
     default:
       system("clear");
