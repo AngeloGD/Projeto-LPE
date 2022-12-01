@@ -1,59 +1,18 @@
 
+#include "header.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define BLK "\e[0;30m"
-#define RED "\e[0;31m"
-#define GRN "\e[0;32m"
-#define YEL "\e[0;33m"
-#define BLU "\e[0;34m"
-#define MAG "\e[0;35m"
-#define CYN "\e[0;36m"
-#define WHT "\e[0;37m"
-
-void MENU() {
-  printf(BLU "\n\t\t\tMENU PRINCIPAL\n\n");
-  printf(" Escolha uma opção:\n\n[1] Adicionar um carro na fila.\n\n[2] "
-         "Abastecimento.\n\n[3] Exibir carros na fila de espera.\n\n[4] "
-         "Relatórios.\n\n[5] Encerrar.\n\n" WHT);
-}
-
-void RELATORIOS() {
-  printf(BLU "\n\n\t\t\tRelatórios:\n\n");
-  printf(" Escolha uma opção:\n\n[1] Quantidade de litros vendida.\n\n[2] "
-         "Valor total arrecadado com as vendas.\n\n[3] Quantidade de carros "
-         "atendidos.\n\n[4] "
-         "Quantidade de combustível restante no tanque.\n\n[5] Gerar "
-         "arquivo "
-         "para impressão (com todas as informações de 1, 2, 3 e 4).\n\n[6] "
-         "voltar ao menu anterior.\n\n" WHT);
-}
-
-void INTRO() {
-  printf(CYN "\n\tAutor: Angelo Gabriel Debarba\n");
-  printf("\nDESCRIÇÃO:\n\nEsse programa tem como base gerenciar as informações "
-         "de um posto de gasolina que contém apenas uma bomba e um tipo de "
-         "combustível.\n" WHT);
-}
-
-void INVALIDO() { printf(RED "\nOPÇÃO INVALIDA!\n\n" WHT); }
-
-struct Tcarro {
-  char modelo[20];
-  char cor[20];
-  int ano;
-};
-
 int main(void) {
 
-  int menu = 0, fila = 0, contfila = 0, op = 0, litros = 0, tanque = 200,
-      carrosatend = 0, litrosvend = 0, escolha = 0, i = 0, j = 0;
-  float preco, valorvendas = 0;
+  int menu = 0, fila = 0, contfila = 0, op = 0, carrosatend = 0, escolha = 0;
+  float preco, valorvendas = 0, litros = 0, tanque = 200, litrosvend = 0;
 
   struct Tcarro *carroFila;
-
   struct Tcarro *carroAtendido;
+
+  FILE *arquivo;
 
   INTRO();
 
@@ -76,7 +35,7 @@ int main(void) {
   } while (fila <= 0);
 
   carroFila = calloc(fila, sizeof(struct Tcarro));
-  int tamanhoAtendido = 1;
+  int tamanhoAtendido = 0;
   carroAtendido = calloc(tamanhoAtendido, sizeof(struct Tcarro));
   system("clear");
 
@@ -92,9 +51,9 @@ int main(void) {
     switch (menu) {
     case (1):
       system("clear");
+      printf("[1] Adicionar um carro na fila:\n\n");
       if (tanque != 0) {
         if (contfila < fila) {
-          printf("[1] Adicionar um carro na fila:\n\n");
           printf("Informe o modelo do carro: ");
           setbuf(stdin, NULL);
           fgets(carroFila[contfila].modelo, 20, stdin);
@@ -108,22 +67,22 @@ int main(void) {
           carroFila[contfila].cor[strcspn(carroFila[contfila].cor, "\n")] = 0;
           printf(GRN "Carro adicionado.\n\n" WHT);
           contfila += 1;
-          // i += 1;
         } else {
           printf(RED "Não é possível adicionar mais carros à fila.\n\n" WHT);
         }
         printf("%d carros na fila\n\n", contfila);
       } else
-        printf(RED "Não há mais gasolina para abastecer novos carros.\n\n" WHT);
+        printf(RED "Não há mais gasolina para abastecer novos "
+                   "carros.\n\nZerando fila!\n\n" WHT);
       break;
     case (2):
       system("clear");
       printf("[2] Abastecimento:\n\n");
       if (tanque != 0) {
         if (contfila > 0) {
-          printf("Restam %d litros de combustível.\n\n", tanque);
+          printf("Restam %.2f litros de combustível.\n\n", tanque);
           printf("Informe a quantidade de litros para abastecer:\n");
-          scanf("%d", &litros);
+          scanf("%f", &litros);
           system("clear");
           if (litros <= 0) {
             printf(RED "\nValor fornecido é ivalido.\n" WHT);
@@ -131,7 +90,7 @@ int main(void) {
             while ((escolha != 1) && (escolha != 2)) {
               printf(RED
                      "Essa quantidade não está disponível no tanque.\n\n" WHT);
-              printf("Deseja abastecer com o que resta no tanque? %d "
+              printf("Deseja abastecer com o que resta no tanque? %.2f "
                      "Litros.\n\n",
                      tanque);
               printf(GRN "[1] SIM\n\n");
@@ -147,25 +106,12 @@ int main(void) {
                 carroAtendido = realloc(
                     carroAtendido, tamanhoAtendido * sizeof(struct Tcarro));
                 carroAtendido[carrosatend] = carroFila[0];
-                // strcpy(carroAtendido[carrosatend].modelo,carroFila[carrosatend].modelo);
-                // carroAtendido[carrosatend].ano = carroFila[carrosatend].ano;
-                // strcpy(carroAtendido[carrosatend].cor,carroFila[carrosatend].cor);
                 carrosatend += 1;
 
-                for (int k = 0; k < contfila; k++) {
-                  carroFila[k] = carroFila[k + 1];
-                }
-                contfila -= 1;
-                // i -= 1;
                 printf(GRN "Carro abastecido.\n\nReorganizando fila.\n\n" WHT);
-                printf("Não há mais gasolina no tanque\n\n");
+                printf(RED "Não há mais gasolina no tanque\n\n" WHT);
                 break;
               case (2):
-                for (int k = 0; k < contfila; k++) {
-                  carroFila[k] = carroFila[k + 1];
-                }
-                // i -= 1;
-                contfila -= 1;
                 printf("Obrigado pela atenção e volte sempre!\n\n");
                 break;
               default:
@@ -177,23 +123,18 @@ int main(void) {
           } else {
             tanque -= litros;
             litrosvend = 200 - tanque;
-            // strcpy(string_destino,string_origem);
             tamanhoAtendido++;
             carroAtendido =
                 realloc(carroAtendido, tamanhoAtendido * sizeof(struct Tcarro));
             carroAtendido[carrosatend] = carroFila[0];
-            // strcpy(carroAtendido[carrosatend].modelo,carroFila[carrosatend].modelo);
-            // carroAtendido[carrosatend].ano = carroFila[carrosatend].ano;
-            // strcpy(carroAtendido[carrosatend].cor,
-            // carroFila[carrosatend].cor);
             carrosatend += 1;
             printf(GRN "Carro abastecido.\n\nReorganizando fila.\n\n" WHT);
-            printf("Restam %d litros de combustível.\n\n", tanque);
-            for (int k = 0; k < contfila; k++) {
-              carroFila[k] = carroFila[k + 1];
-            }
-            contfila -= 1;
+            printf("Restam %.2f litros de combustível.\n\n", tanque);
           }
+          for (int k = 0; k < contfila; k++) {
+            carroFila[k] = carroFila[k + 1];
+          }
+          contfila -= 1;
         } else {
           printf(RED "Não há carros disponíveis para abastecer!\n\n" WHT);
         }
@@ -206,9 +147,6 @@ int main(void) {
       printf("[3] Exibir carros na fila de espera:\n\n");
       if (tanque != 0) {
         printf("%d carros ainda não foram abastecidos.\n\n", contfila);
-        // j = carrosatend;
-        // while (j < i) {
-        // j += 1;
         for (int k = 0; k < contfila; k++) {
           printf("\nCarro %d\n", (k + 1));
           printf("O modelo do carro é: %s\n", carroFila[k].modelo);
@@ -231,7 +169,7 @@ int main(void) {
         switch (op) {
         case (1):
           system("clear");
-          printf("[1] Quantidade de litros vendida:\n\n%d Litros.\n\n",
+          printf("[1] Quantidade de litros vendida:\n\n%.2f Litros.\n\n",
                  litrosvend);
           break;
         case (2):
@@ -245,9 +183,6 @@ int main(void) {
           printf("[3] Quantidade de carros "
                  "atendidos:\n\n%d Carros.\n\n",
                  carrosatend);
-          // j = 0;
-          // while (j < carrosatend) {
-          // j += 1;
           for (int k = 0; k < carrosatend; k++) {
             printf("Carro %d\n", k + 1);
             printf("O modelo do carro é: %s\n", carroAtendido[k].modelo);
@@ -258,7 +193,7 @@ int main(void) {
           break;
         case (4):
           system("clear");
-          printf("[4] Quantidade de combustível restante no tanque:\n\n%d "
+          printf("[4] Quantidade de combustível restante no tanque:\n\n%.2f "
                  "Litros.\n\n",
                  tanque);
           break;
@@ -266,20 +201,54 @@ int main(void) {
           system("clear");
           printf("[5] Gerar arquivo "
                  "para impressão com todas as informações de 1, 2, 3 e 4:\n\n");
-          printf(" Quantidade de litros vendida: %d Litros.\n", litrosvend);
+          printf(" Quantidade de litros vendida: %.2f Litros.\n", litrosvend);
           valorvendas = (preco * litrosvend);
           printf(" Valor total arrecadado com as vendas: R$ %.2f\n",
                  valorvendas);
           printf(" Quantidade de carros "
                  "atendidos: %d Carros.\n",
                  carrosatend);
-          printf(" Quantidade de combustível restante no tanque: %d "
+          printf(" Quantidade de combustível restante no tanque: %.2f "
                  "Litros.\n\n",
                  tanque);
+
+          arquivo = fopen("arquivo.txt", "w");
+
+          if (arquivo == NULL) {
+            printf(RED "Arquivo não pode ser aberto!\n\n" WHT);
+            exit(0);
+          } else {
+            fprintf(arquivo, "RELÁTORIOS:\n");
+            fprintf(arquivo, " Quantidade de litros vendida: %.2f Litros.\n",
+                    litrosvend);
+            valorvendas = (preco * litrosvend);
+            fprintf(arquivo, " Valor total arrecadado com as vendas: R$ %.2f\n",
+                    valorvendas);
+            fprintf(arquivo,
+                    " Quantidade de carros "
+                    "atendidos: %d Carros.\n",
+                    carrosatend);
+            fprintf(arquivo,
+                    " Quantidade de combustível restante no tanque: %.2f "
+                    "Litros.\n\n",
+                    tanque);
+            if (carrosatend > 0) {
+              fprintf(arquivo, "Carros atendidos:\n\n");
+              for (int k = 0; k < carrosatend; k++) {
+                fprintf(arquivo, "Carro %d\n", k + 1);
+                fprintf(arquivo, "O modelo do carro é: %s\n",
+                        carroAtendido[k].modelo);
+                fprintf(arquivo, "Cor do carro: %s\n", carroAtendido[k].cor);
+                fprintf(arquivo, "Ano de fabricação: %d\n\n",
+                        carroAtendido[k].ano);
+              }
+            }
+          }
+          fclose(arquivo);
           break;
         case (6):
           system("clear");
-          printf("\n[6] Voltar ao menu anterior:\n\n");
+          printf("[6] Voltar ao menu anterior:\n\n");
           break;
         default:
           system("clear");
