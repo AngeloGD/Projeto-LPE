@@ -9,16 +9,41 @@
 #define CYN "\e[0;36m"
 #define WHT "\e[0;37m"
 
+void MENU() {
+  printf(BLU "\n\t\t\tMENU PRINCIPAL\n\n");
+  printf(" Escolha uma opção:\n\n[1] Adicionar um carro na fila.\n\n[2] "
+         "Abastecimento.\n\n[3] Exibir carros na fila de espera.\n\n[4] "
+         "Relatórios.\n\n[5] Encerrar.\n\n" WHT);
+}
+
+void RELATORIOS() {
+  printf(BLU "\n\t\t\tRelatórios:\n\n");
+  printf(" Escolha uma opção:\n\n[1] Quantidade de litros vendida.\n\n[2] "
+         "Valor total arrecadado com as vendas.\n\n[3] Quantidade de carros "
+         "atendidos.\n\n[4] "
+         "Quantidade de combustível restante no tanque.\n\n[5] Gerar "
+         "arquivo "
+         "para impressão (com todas as informações de 1, 2, 3 e 4).\n\n[6] "
+         "voltar ao menu anterior.\n\n" WHT);
+}
+
+void INTRO() {
+  printf(CYN "\n\tAutor: Angelo Gabriel Debarba\n");
+  printf("\nDESCRIÇÃO:\n\nEsse programa tem como base gerenciar as informações "
+         "de um posto de gasolina que contém apenas uma bomba e um tipo de "
+         "combustível.\n" WHT);
+}
+
+void INVALIDO() { printf(RED "\nOPÇÃO INVALIDA\n\n" WHT); }
+
 int main(void) {
 
   int menu = 0, fila = 0, contfila = 0, op = 0, litros = 0, tanque = 200,
       carrosatend = 0, litrosvend = 0;
   float preco, valorvendas = 0;
 
-  printf(CYN "\n\tAutor: Angelo Gabriel Debarba\n");
-  printf("\nDESCRIÇÃO:\n\nEsse programa tem como base gerenciar as informações "
-         "de um posto de gasolina que contém apenas uma bomba e um tipo de "
-         "combustível.\n" WHT);
+  INTRO();
+
   do {
     printf("\nPor gentileza, informe o preço da gasolina:\nATENÇÃO: Utilize um "
            "ponto para definir o valor em centavos!!\n");
@@ -44,10 +69,8 @@ int main(void) {
   while (menu != 5) {
     op = 0;
 
-    printf(BLU "\n\t\t\tMENU PRINCIPAL\n\n");
-    printf(" Escolha uma opção:\n\n[1] Adicionar um carro na fila.\n\n[2] "
-           "Abastecimento.\n\n[3] Exibir carros na fila de espera.\n\n[4] "
-           "Relatórios.\n\n[5] Encerrar.\n\n" WHT);
+    MENU();
+
     scanf("%d", &menu);
 
     switch (menu) {
@@ -97,15 +120,9 @@ int main(void) {
       system("clear");
 
       while (op != 6) {
-        printf(BLU "\n\t\t\tRelatórios:\n\n");
-        printf(
-            " Escolha uma opção:\n\n[1] Quantidade de litros vendida.\n\n[2] "
-            "Valor total arrecadado com as vendas.\n\n[3] Quantidade de carros "
-            "atendidos.\n\n[4] "
-            "Quantidade de combustível restante no tanque.\n\n[5] Gerar "
-            "arquivo "
-            "para impressão (com todas as informações de 1, 2, 3 e 4).\n\n[6] "
-            "voltar ao menu anterior.\n\n" WHT);
+
+        RELATORIOS();
+
         scanf("%d", &op);
         switch (op) {
         case (1):
@@ -152,7 +169,7 @@ int main(void) {
           break;
         default:
           system("clear");
-          printf(RED "\nOpção invalida.\n\n" WHT);
+          INVALIDO();
           break;
         }
       }
@@ -164,7 +181,7 @@ int main(void) {
       break;
     default:
       system("clear");
-      printf(RED "Opção invalida.\n\n" WHT);
+      INVALIDO();
       break;
     }
   }
