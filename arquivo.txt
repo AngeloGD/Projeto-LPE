@@ -1,0 +1,23 @@
+RELÁTORIOS:
+ Quantidade de litros vendida: 200.00 Litros.
+ Valor total arrecadado com as vendas: R$ 1000.00
+ Quantidade de carros atendidos: 3 Carros.
+ Quantidade de combustível restante no tanque: 0.00 Litros.
+
+Carros atendidos:
+
+Carro 1
+O modelo do carro é: 2
+Cor do carro: 2
+Ano de fabricação: 2
+
+Carro 2
+O modelo do carro é: 3
+Cor do carro: 3
+Ano de fabricação: 3
+
+Carro 3
+O modelo do carro é: 4
+Cor do carro: 4
+Ano de fabricação: 4
+

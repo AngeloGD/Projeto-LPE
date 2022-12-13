@@ -63,7 +63,7 @@ int main(void) {
           scanf("%d", &carroFila[contfila].ano);
           printf("Informe a cor do carro: ");
           setbuf(stdin, NULL);
-          fgets(carroFila[contfila].cor, 10, stdin);
+          fgets(carroFila[contfila].cor, 20, stdin);
           carroFila[contfila].cor[strcspn(carroFila[contfila].cor, "\n")] = 0;
           printf(GRN "Carro adicionado.\n\n" WHT);
           contfila += 1;
@@ -113,6 +113,7 @@ int main(void) {
                 break;
               case (2):
                 printf("Obrigado pela atenção e volte sempre!\n\n");
+                printf(RED"Você foi removido da fila"WHT);
                 break;
               default:
                 INVALIDO();
